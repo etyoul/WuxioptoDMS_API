@@ -42,58 +42,70 @@ Content-Type:application/json
 요청은 body에 JSON 데이터로 작성합니다.
 
 
+## 3. 팝업 메시지
 
-### 5.1 요청샘플
+### 1) URL
+```http
+https://display.wuxiopto.com:8011/popup
+```
 
-#### 5.1.1 cURL
+### 2) JSON DATA
+```json
+{
+    "token": "{API 토큰}",
+    "target": "{디스플 이름}",
+    "message": "{메시지}"
+}
+```
+
+### 3) 요청샘플
+
+#### 3.1) cURL
 
 ```curl
-curl -X POST -H "Content-Type: application/json" 
-  -d '{"target":"display15982", "message":"주차장에 오신 것을 환영합니다.\n00거 0000차량이 입차되었습니다."}'
-  "http://localhost:9496/display/message"
+curl --location --request POST 'https://display.wuxiopto.com:8011/popup' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "token": "12345678-90ab-cdef-1234-567890abcdef",
+    "target": "display12345",
+    "message": "12가 3456 차량 입차확인되었습니다."
+}'
 ```
 
 
-
-#### 5.1.2 Java
+#### 3.2) Java
 
 ```java
-OkHttpClient client = new OkHttpClient();
-
+OkHttpClient client = new OkHttpClient().newBuilder()
+  .build();
 MediaType mediaType = MediaType.parse("application/json");
-
-RequestBody body = RequestBody.create(mediaType, "{\"target\":\"display15982\", \"message\":\"주차장에 오신 것을 환영합니다.\\n00거 0000차량이 입차되었습니다.\"}");
-
+RequestBody body = RequestBody.create(mediaType, "{\r\n    \"token\": \"12345678-90ab-cdef-1234-567890abcdef\",\r\n    \"target\": \"display12345\",\r\n    \"message\": \"12가 3456 차량 입차확인되었습니다.\"\r\n}");
 Request request = new Request.Builder()
- .url("http://localhost:9496/display/message")
- .post(body)
- .addHeader("content-type", "application/json")
- .build();
- 
+  .url("https://display.wuxiopto.com:8011/popup")
+  .method("POST", body)
+  .addHeader("Content-Type", "application/json")
+  .build();
 Response response = client.newCall(request).execute();
 ```
 
 
 
-#### 5.1.3 Javascript
+#### 3.3) Javascript
 
 ```javascript
-var data = JSON.stringify({
-  "target": "display15982",
-  "message": "주차장에 오신 것을 환영합니다.\n00거 0000차량이 입차되었습니다."
-});
+var data = JSON.stringify({"token":"12345678-90ab-cdef-1234-567890abcdef","target":"display12345","message":"12가 3456 차량 입차확인되었습니다."});
 
 var xhr = new XMLHttpRequest();
 xhr.withCredentials = true;
 
-xhr.addEventListener("readystatechange", function () {
-  if (this.readyState === 4) {
+xhr.addEventListener("readystatechange", function() {
+  if(this.readyState === 4) {
     console.log(this.responseText);
   }
 });
 
-xhr.open("POST", "http://localhost:9496/display/message");
-xhr.setRequestHeader("content-type", "application/json");
+xhr.open("POST", "https://display.wuxiopto.com:8011/popup");
+xhr.setRequestHeader("Content-Type", "application/json");
 
 xhr.send(data);
 
@@ -101,50 +113,227 @@ xhr.send(data);
 
 
 
-#### 5.1.4 PHP
+#### 3.4) PHP
 
 ```php
 <?php
-
-$request = new HttpRequest();
-$request->setUrl('http://localhost:9496/display/message');
-$request->setMethod(HTTP_METH_POST);
-
-$request->setHeaders(array(
-  'content-type' => 'application/json'
+require_once 'HTTP/Request2.php';
+$request = new HTTP_Request2();
+$request->setUrl('https://display.wuxiopto.com:8011/popup');
+$request->setMethod(HTTP_Request2::METHOD_POST);
+$request->setConfig(array(
+  'follow_redirects' => TRUE
 ));
-
-$request->setBody('{"target":"display15982", "message":"주차장에 오신 것을 환영합니다.\\n00거 0000차량이 입차되었습니다."}');
-
+$request->setHeader(array(
+  'Content-Type' => 'application/json'
+));
+$request->setBody('{
+\n    "token": "12345678-90ab-cdef-1234-567890abcdef",
+\n    "target": "display12345",
+\n    "message": "12가 3456 차량 입차확인되었습니다."
+\n}');
 try {
   $response = $request->send();
-
-  echo $response->getBody();
-} catch (HttpException $ex) {
-  echo $ex;
+  if ($response->getStatus() == 200) {
+    echo $response->getBody();
+  }
+  else {
+    echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' .
+    $response->getReasonPhrase();
+  }
+}
+catch(HTTP_Request2_Exception $e) {
+  echo 'Error: ' . $e->getMessage();
 }
 
 ```
 
 
 
-#### 5.1.5 Python
+#### 3.5) Python
 
 ```python
 import requests
 
-url = "http://localhost:9496/display/message"
+url = "https://display.wuxiopto.com:8011/popup"
 
-payload = "{\"target\":\"display15982\", \"message\":\"주차장에 오신 것을 환영합니다.\\n00거 0000차량이 입차되었습니다.\"}"
+payload = "{\r\n    \"token\": \"12345678-90ab-cdef-1234-567890abcdef\",\r\n    \"target\": \"display12345\",\r\n    \"message\": \"12가 3456 차량 입차확인되었습니다.\"\r\n}"
 headers = {
-    'content-type': "application/json"
-    }
+  'Content-Type': 'application/json'
+}
 
-response = requests.request("POST", url, data=payload, headers=headers)
+response = requests.request("POST", url, headers=headers, data = payload)
 
-print(response.text)
+print(response.text.encode('utf8'))
+
 ```
 
+
+## 4. 동적텍스트 (dynamic text)
+
+### 1) URL
+```http
+https://display.wuxiopto.com:8011/dynamictext
+```
+
+### 2) JSON DATA
+```json
+{
+  "token": "{API 토큰}",
+  "target": "{디스플레이 이름}",
+  "texts": [
+    {
+      "key": "{동적텍스트 key1}",
+      "text": "{메시지1}"
+    },
+    {
+      "key": "{동적텍스트 key2}",
+      "text": "{메시지2}"
+    },
+    {
+      "key": "{동적텍스트 key3}",
+      "text": "{메시지3}"
+    }
+  ]
+}
+```
+
+### 3) 요청샘플
+
+#### 3.1) cURL
+
+```curl
+curl --location --request POST 'https://display.wuxiopto.com:8011/dynamictext' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "token": "12345678-90ab-cdef-1234-567890abcdef",
+  "target": "display12345",
+  "texts": [
+    {
+      "key": "title",
+      "text": "OO 주차장에 오신 것을 환영합니다."
+    },
+    {
+      "key": "body",
+      "text": "현재 56석의 주차공간이 있습니다"
+    },
+    {
+      "key": "footer",
+      "text": "지하 1층은 만차입니다."
+    }
+  ]
+}'
+```
+
+
+#### 3.2) Java
+
+```java
+OkHttpClient client = new OkHttpClient().newBuilder()
+  .build();
+MediaType mediaType = MediaType.parse("application/json");
+RequestBody body = RequestBody.create(mediaType, "{\r\n  \"token\": \"12345678-90ab-cdef-1234-567890abcdef\",\r\n  \"target\": \"display12345\",\r\n  \"texts\": [\r\n    {\r\n      \"key\": \"title\",\r\n      \"text\": \"OO 주차장에 오신 것을 환영합니다.\"\r\n    },\r\n    {\r\n      \"key\": \"body\",\r\n      \"text\": \"현재 56석의 주차공간이 있습니다\"\r\n    },\r\n    {\r\n      \"key\": \"footer\",\r\n      \"text\": \"지하 1층은 만차입니다.\"\r\n    }\r\n  ]\r\n}");
+Request request = new Request.Builder()
+  .url("https://display.wuxiopto.com:8011/dynamictext")
+  .method("POST", body)
+  .addHeader("Content-Type", "application/json")
+  .build();
+Response response = client.newCall(request).execute();
+```
+
+
+
+#### 3.3) Javascript
+
+```javascript
+var data = JSON.stringify({"token":"12345678-90ab-cdef-1234-567890abcdef","target":"display12345","texts":[{"key":"title","text":"OO 주차장에 오신 것을 환영합니다."},{"key":"body","text":"현재 56석의 주차공간이 있습니다"},{"key":"footer","text":"지하 1층은 만차입니다."}]});
+
+var xhr = new XMLHttpRequest();
+xhr.withCredentials = true;
+
+xhr.addEventListener("readystatechange", function() {
+  if(this.readyState === 4) {
+    console.log(this.responseText);
+  }
+});
+
+xhr.open("POST", "https://display.wuxiopto.com:8011/dynamictext");
+xhr.setRequestHeader("Content-Type", "application/json");
+
+xhr.send(data);
+```
+
+
+
+#### 3.4) PHP
+
+```php
+<?php
+<?php
+require_once 'HTTP/Request2.php';
+$request = new HTTP_Request2();
+$request->setUrl('https://display.wuxiopto.com:8011/dynamictext');
+$request->setMethod(HTTP_Request2::METHOD_POST);
+$request->setConfig(array(
+  'follow_redirects' => TRUE
+));
+$request->setHeader(array(
+  'Content-Type' => 'application/json'
+));
+$request->setBody('{
+\n  "token": "12345678-90ab-cdef-1234-567890abcdef",
+\n  "target": "display12345",
+\n  "texts": [
+\n    {
+\n      "key": "title",
+\n      "text": "OO 주차장에 오신 것을 환영합니다."
+\n    },
+\n    {
+\n      "key": "body",
+\n      "text": "현재 56석의 주차공간이 있습니다"
+\n    },
+\n    {
+\n      "key": "footer",
+\n      "text": "지하 1층은 만차입니다."
+\n    }
+\n  ]
+\n}');
+try {
+  $response = $request->send();
+  if ($response->getStatus() == 200) {
+    echo $response->getBody();
+  }
+  else {
+    echo 'Unexpected HTTP status: ' . $response->getStatus() . ' ' .
+    $response->getReasonPhrase();
+  }
+}
+catch(HTTP_Request2_Exception $e) {
+  echo 'Error: ' . $e->getMessage();
+}
+
+```
+
+
+
+#### 3.5) Python
+
+```python
+import requests
+
+url = "https://display.wuxiopto.com:8011/dynamictext"
+
+payload = "{\r\n  \"token\": \"12345678-90ab-cdef-1234-567890abcdef\",\r\n  \"target\": \"display12345\",\r\n  \"texts\": [\r\n    {\r\n      \"key\": \"title\",\r\n      \"text\": \"OO 주차장에 오신 것을 환영합니다.\"\r\n    },\r\n    {\r\n      \"key\": \"body\",\r\n      \"text\": \"현재 56석의 주차공간이 있습니다\"\r\n    },\r\n    {\r\n      \"key\": \"footer\",\r\n      \"text\": \"지하 1층은 만차입니다.\"\r\n    }\r\n  ]\r\n}"
+headers = {
+  'Content-Type': 'application/json'
+}
+
+response = requests.request("POST", url, headers=headers, data = payload)
+
+print(response.text.encode('utf8'))
+
+
+```
 
 
 ## 6. Response
