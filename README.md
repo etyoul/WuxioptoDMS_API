@@ -12,7 +12,7 @@ WUXIOPTO DMS에 등록된 가입사별 토큰을 이용해 요청할 수 있으�
 
 ## 2. 공통
 
-### 1) URL
+### 2.1 URL
 
 **프로토콜은 HTTPS(SSL/TLS)이며 포트는 8011입니다.**
 
@@ -21,14 +21,14 @@ https://display.wuxiopto.com:8011/{command}
 ```
 
 
-### 2) Method
+### 2.2 Method
 
 MessageAPI는 **POST**만을 사용합니다.
 
 GET, PUT, DELETE Method는 지원하지 않습니다.
 
 
-### 3) HTTP Header
+### 2.3 HTTP Header
 
 JSON 포맷의 데이터로 요청, 응답합니다. 따라서 header의 Content-Type은 다음과 같습니다.
 
@@ -37,19 +37,19 @@ Content-Type:application/json
 ```
 
 
-### 4) Request
+### 2.4 Request
 
 요청은 body에 JSON 데이터로 작성합니다.
 
 
 ## 3. 팝업 메시지
 
-### 1) URL
+### 3.1 URL
 ```http
 https://display.wuxiopto.com:8011/popup
 ```
 
-### 2) JSON DATA
+### 3.2 JSON DATA
 ```json
 {
     "token": "{API 토큰}",
@@ -58,9 +58,9 @@ https://display.wuxiopto.com:8011/popup
 }
 ```
 
-### 3) 요청샘플
+### 3.3 요청샘플
 
-#### 3.1) cURL
+#### 3.3.1 cURL
 
 ```curl
 curl --location --request POST 'https://display.wuxiopto.com:8011/popup' \
@@ -73,7 +73,7 @@ curl --location --request POST 'https://display.wuxiopto.com:8011/popup' \
 ```
 
 
-#### 3.2) Java
+#### 3.3.2 Java
 
 ```java
 OkHttpClient client = new OkHttpClient().newBuilder()
@@ -90,7 +90,7 @@ Response response = client.newCall(request).execute();
 
 
 
-#### 3.3) Javascript
+#### 3.3.3 Javascript
 
 ```javascript
 var data = JSON.stringify({"token":"12345678-90ab-cdef-1234-567890abcdef","target":"display12345","message":"12가 3456 차량 입차확인되었습니다."});
@@ -113,7 +113,7 @@ xhr.send(data);
 
 
 
-#### 3.4) PHP
+#### 3.3.4 PHP
 
 ```php
 <?php
@@ -150,7 +150,7 @@ catch(HTTP_Request2_Exception $e) {
 
 
 
-#### 3.5) Python
+#### 3.3.5 Python
 
 ```python
 import requests
@@ -171,12 +171,12 @@ print(response.text.encode('utf8'))
 
 ## 4. 동적텍스트 (dynamic text)
 
-### 1) URL
+### 4.1 URL
 ```http
 https://display.wuxiopto.com:8011/dynamictext
 ```
 
-### 2) JSON DATA
+### 4.2 JSON DATA
 ```json
 {
   "token": "{API 토큰}",
@@ -198,9 +198,9 @@ https://display.wuxiopto.com:8011/dynamictext
 }
 ```
 
-### 3) 요청샘플
+### 4.3 요청샘플
 
-#### 3.1) cURL
+#### 4.3.1 cURL
 
 ```curl
 curl --location --request POST 'https://display.wuxiopto.com:8011/dynamictext' \
@@ -226,7 +226,7 @@ curl --location --request POST 'https://display.wuxiopto.com:8011/dynamictext' \
 ```
 
 
-#### 3.2) Java
+#### 4.3.2 Java
 
 ```java
 OkHttpClient client = new OkHttpClient().newBuilder()
@@ -243,7 +243,7 @@ Response response = client.newCall(request).execute();
 
 
 
-#### 3.3) Javascript
+#### 4.3.3 Javascript
 
 ```javascript
 var data = JSON.stringify({"token":"12345678-90ab-cdef-1234-567890abcdef","target":"display12345","texts":[{"key":"title","text":"OO 주차장에 오신 것을 환영합니다."},{"key":"body","text":"현재 56석의 주차공간이 있습니다"},{"key":"footer","text":"지하 1층은 만차입니다."}]});
@@ -265,7 +265,7 @@ xhr.send(data);
 
 
 
-#### 3.4) PHP
+#### 4.3.4 PHP
 
 ```php
 <?php
@@ -316,7 +316,7 @@ catch(HTTP_Request2_Exception $e) {
 
 
 
-#### 3.5) Python
+#### 4.3.5 Python
 
 ```python
 import requests
